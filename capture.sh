@@ -12,10 +12,7 @@ OUTPUT_LEN="${OUTPUT_LEN:-128}"
 MAX_CONCURRENCY="${MAX_CONCURRENCY:-8}"
 DISCARD="${DISCARD:-1}"
 
-if [[ -z "${OPENAI_API_KEY:-}" ]]; then
-  echo "OPENAI_API_KEY is not set" >&2
-  exit 1
-fi
+export OPENAI_API_KEY=local
 
 if ! curl -sf localhost:8000/v1/models >/dev/null; then
   echo "server is not answering on localhost:8000" >&2

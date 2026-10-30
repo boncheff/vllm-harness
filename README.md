@@ -9,11 +9,10 @@ The bench runs on the pod against localhost. The page is on your machine. Counte
 ## Run
 
 ```bash
-export OPENAI_API_KEY=...
 python3 pull_run.py --ssh USER@ssh.runpod.io --dollars-per-hour PRICE
 ```
 
-`USER` is the name on the connect panel's `ssh.runpod.io` line. `PRICE` is the hourly price of that pod. The key defaults to `~/.ssh/id_runpod`.
+`USER` is the name on the connect panel's `ssh.runpod.io` line. `PRICE` is the hourly price of that pod. The SSH key defaults to `~/.ssh/id_runpod`.
 
 That sends `capture.sh` over SSH. It runs a discard bench, then the timed bench, and writes `runs/<timestamp>/run.json`.
 

@@ -129,7 +129,8 @@ def load_runs():
         if discard:
             rows.append(bench_row("First bench, full prefill", discard, price))
         if bench:
-            rows.append(bench_row("Second bench, prefix cache hit", bench, price, hit))
+            label = "Second bench, prefix cache hit" if hit else "Second bench"
+            rows.append(bench_row(label, bench, price, hit))
         if not rows:
             rows.append(
                 {
@@ -186,7 +187,7 @@ PAGE = """<!doctype html>
 </head>
 <body>
 <h1>Harness</h1>
-<p>One block per run. The bench table is what vllm bench serve printed. The series table is the /metrics diff for that whole run.</p>
+<p>One block per run: bench table from vllm bench serve, series table from the /metrics diff.</p>
 <div id="runs"></div>
 <script>
 const RUNS = __RUNS__;

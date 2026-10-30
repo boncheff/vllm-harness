@@ -90,7 +90,7 @@ def run_session(command: list[str], remote_lines: str, timeout_s: int) -> str:
     return b"".join(chunks).decode("utf-8", "replace")
 
 
-def remote_script(capture: str, api_key: str, dollars_note: str) -> str:
+def remote_script(capture: str) -> str:
     encoded = base64.b64encode(capture.encode()).decode()
     wrapped = "\n".join(encoded[i : i + 76] for i in range(0, len(encoded), 76))
     return (
@@ -98,7 +98,6 @@ def remote_script(capture: str, api_key: str, dollars_note: str) -> str:
         f"{wrapped}\n"
         "END_SCRIPT\n"
         "chmod +x /tmp/capture.sh\n"
-        f"export OPENAI_API_KEY='{api_key}'\n"
         "bash /tmp/capture.sh\n"
         "exit\n"
     )
@@ -113,9 +112,6 @@ def main():
     parser.add_argument("--timeout", type=int, default=1200)
     args = parser.parse_args()
 
-    api_key = os.environ.get("OPENAI_API_KEY", "")
-    if not api_key:
-        raise SystemExit("set OPENAI_API_KEY in this shell first")
     capture = (here / "capture.sh").read_text()
     stamp = time.strftime("%Y-%m-%d-%H%M%S")
     out_dir = here / "runs" / stamp
@@ -132,8 +128,8 @@ def main():
         "StrictHostKeyChecking=accept-new",
         args.ssh,
     ]
-    raw = run_session(command, remote_script(capture, api_key, ""), args.timeout)
-    log = raw.replace(api_key, "***")
+    raw = run_session(command, remote_script(capture), args.timeout)
+    log = raw
     (out_dir / "session.log").write_text(log)
     status, blob = extract_tarball(raw)
     tarball = out_dir / "metrics-run.tgz"
